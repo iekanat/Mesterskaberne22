@@ -1,0 +1,72 @@
+---
+title: "Data In - Data Out"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Loading RData files
+
+R's own data format is RData. You can easily import it by either double clicking on the file, or using the load command.
+
+```{r}
+load("Profits.RData")
+```
+
+## Comma Separated Value (CSV) Files
+
+This is the most common file format there is to transfer data, with good reason I might add. It is human readable (not binary), and is compatible with almost any system out there. The basic idea is, the columns are separated by commas and observations are separated by new lines. I would recommend you use this format if you have concerns about portability of data.
+
+R uses read.csv function (remember the Introduction to R Console learning activity) to import this file type. But first, let us learn more about this function (by using the help function).
+
+```{r}
+help(read.csv)
+```
+
+As you can see, the function takes quite a few parameters but most are optional with reasonable defaults (meaning you can safely leave them blank).
+
+You are provided with a [file](bagsOfApples.csv) named "bagsOfApples.csv" in the course repository. If you placed this file in your project directory you can import its contents as follows.
+
+```{r,results='hide'}
+# Save file contents into a variable called bagsOfApples
+bagsOfApples <- read.csv("bagsOfApples.csv")
+# view the contents (Output omited here to save space)
+bagsOfApples
+```
+
+To view the contents of this new variable in a spreadsheet format, double click the csv in Environment pane of R studio (Area B), or write the command below.
+
+```{r}
+View(bagsOfApples) # we utilize View function to display results in R Studio
+```
+
+You can also explore the file contents via R functions.
+
+```{r}
+str(bagsOfApples) # Structure
+summary(bagsOfApples) # Descriptive Statistics
+```
+
+To export data in csv format, you can use write.csv() function.
+
+Inspect manual entry for the command.
+
+```{r}
+?write.csv
+write.csv(csv, file = "data/countryExp.csv")
+```
+
+## Databases
+
+R can connect to a variety of databases. For this workshop we currently do not have access to a database to demonstrate this functionality. Below is an example for MySQL.
+
+```{r, eval=FALSE}
+library(RMySQL) # Load the necessary package
+# Establish database connection
+channel <- dbConnect(MySQL(), user = "uname", password = "pwd",
+                     host = "127.0.01", dbname="exampledata")
+# Execute query over connection, save results
+sqlResult <- dbGetQuery(channel, "SELECT * FROM table;")
+```

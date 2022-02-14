@@ -1,0 +1,124 @@
+---
+title: "Importing Data"
+author: "Irfan Kanat"
+date: "June 26, 2017"
+output:
+  pdf_document: default
+  html_document: default
+urlcolor: blue
+---
+
+
+In this learning activity I will try to walk you through the most common data import functions. Once you learn the basics, you can use the same principles to any type of analysis task at hand.
+
+
+## Before Beginning
+
+*Make sure you are using the same project as we did in the introduction.* Copy the files in the zip file provided to your project directory.
+
+
+## Comma Separated Value (CSV) Files
+
+This is the most common file format there is to transfer data, with good reason I might add. It is human readable (not binary), and is compatible with almost any system out there. The basic idea is, the columns are separated by commas and observations are separated by new lines. I would recommend you use this format unless you have compelling reason to do otherwise.
+
+R uses read.csv function (remember the Introduction to R Console learning activity) to import this file type. But first, let us learn more about this function (by using the help function).
+
+```{r}
+help(read.csv)
+```
+
+As you can see, the function takes quite a few parameters but most are optional with reasonable defaults (meaning you can safely leave them blank).
+
+You are provided with a [file](country.csv) named "country.csv" in the course repository. If you placed this file in your project directory you can import its contents as follows.
+
+```{r,results='hide'}
+# Save file contents into a variable called csv
+csv <- read.csv("country.csv")
+# view the contents (Output omited here to save space)
+csv
+```
+
+To view the contents of this new variable in a spreadsheet format, double click the csv in Environment pane of R studio (Area B), or write the command below.
+
+```{r}
+View(csv) # we utilize View function to display results in R Studio
+```
+
+You can also explore the file contents via R functions.
+
+```{r}
+str(csv) # Structure
+summary(csv) # Descriptive Statistics
+```
+
+To export data in csv format, you can use write.csv() function.
+
+Inspect manual entry for the command.
+
+```{r}
+?write.csv
+write.csv(csv, file = "data/countryExp.csv")
+```
+
+## Excel Files
+
+This file format is very common due to the popularity of Microsoft's office suite. 
+
+To import this file type we need two additional steps, installing and loading packages (covered in Packages and Package Management activity).
+
+```{r}
+# Below is commented out, since I do not want R to install package every time you run this.
+# Uncomment the line (by deleting the hash sign) the first time and run.
+#install.packages("readxl") # Install the readxl package that enables xlsx import function.
+library(readxl) # Enable the package
+```
+
+Now let us read the [xlsx file](country.xlsx) into R. Note that I had to specify which worksheet to import.
+
+```{r}
+xlsx <- read_excel("country.xlsx") # Import the file
+xlsx # view contents
+```
+
+The package has other functionality that you can discover on your own (use help function).
+
+## Databases
+
+R can connect to a variety of databases. For this workshop we currently do not have access to a database to demonstrate this functionality. Below is an example for MySQL.
+
+```{r, eval=FALSE}
+library(RMySQL) # Load the necessary package
+# Establish database connection
+channel <- dbConnect(MySQL(), user = "uname", password = "pwd",
+                     host = "127.0.01", dbname="exampledata")
+# Execute query over connection, save results
+sql <- dbGetQuery(channel, "SELECT * FROM table;")
+```
+
+## Other Statistical Packages
+
+R enables importing data from other statistical packages as well. I would recommend exporting the data from other packages in a csv and then importing it that way to minimize incompatibilities. If you have no access to the offending statistical package, then you can easily use one of the packages listed below.
+
+I won't go into details as this may well turn out to be a fringe case not useful to all. For the purposes of this course, I will only discuss the packages and functions used and not actually import any data. You can use the principles used in earlier steps to import data on your own.
+
+### SAS
+
+Package used for sas data format after version 7 is called 'sas7bdat'. The function used is called read.sas7bdat().
+
+If you have exported the data from SAS, you can use 'foreign' package with read.xport() function.
+
+### STATA
+
+Stata data format has changed after version 13. If you wish to import a file of this sort use 'readstata13' package with read.dta13() function.
+
+Earlier versions can be imported with 'foreign' package's read.dta() function.
+
+### SPSS
+
+SPSS sav files can be imported with 'foreign' package's read.spss() function.
+
+Exported por files can be imported with 'Hmisc' package's spss.get() function.
+
+------
+
+![Creative Commons 4](figures/cc.png) How I Learned to Stop Worrying and Love the R Console by [Irfan E Kanat](http://irfankanat.com) is licensed under a [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/). Based on a work at [http://github.com/iekanat/rworkshop](http://github.com/iekanat/rworkshop).

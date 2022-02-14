@@ -1,0 +1,148 @@
+---
+title: "02_Visualizations"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(ggplot2)
+data(mpg)
+load("Profits.RData")
+```
+
+# Visualizations 
+
+Visualizations serve two purposes.
+
++ Explore Data
++ Communicate information
+
+In R you can either use the base R functionality or the newer ggplot2 package.
+
+ggplot2 is very flexible and powerful. You can visualize anything with it.
+
+The package is based on grammar of visualization. Each visualization is a combination of:
+
++ Data
++ Aesthetics
++ Geometric Objects
+
+## GGPLOT - Syntax
+
+Data is mpg
+
+Aesthetics is we assign displacement to x axis and cty to y axis.
+
+```{r}
+ggplot(mpg, aes(x = displ, y = cty)) +
+  geom_point()
+```
+
+qplot is a wrapper around ggplot that eases its use. It uses sane defaults.
+
+```{r fig.width=21,fig.height=9}
+qplot(x = displ, y = cty, data = mpg)
+```
+
+So if what you want is run of the mill visualizations qplot can be a good solution.
+
+## Basic Visualizations
+
+Here are some basic visualizations:
+
++ Histograms
++ Barcharts
++ Scatter Plots
++ Line Plots 
++ More...
+
+We will see when to use which of these.
+
+### Histogram
+
+Single continuous variable.
+
+```{r}
+ggplot(mpg, aes(x = cty)) +
+  geom_bar()
+```
+
+### Barchart
+
+Single categorical variable.
+
+```{r}
+ggplot(mpg, aes(x = class)) +
+  geom_bar()
+```
+
+### Scatter Plot
+
+Relation between two variables.
+
+```{r fig.width = 21, fig.height = 9}
+ggplot(mpg, aes(x = displ, y = cty)) +
+  geom_point()
+```
+
+### Line Plot
+
+Variables that change over time.
+
+```{r fig.width = 21, fig.height = 6}
+ggplot(profits, aes(x = year, y = profit, linetype = company, color = company)) +
+  geom_line()
+```
+
+## Making Things Clearer
+
+Title's help
+
+```{r fig.width = 21, fig.height = 6}
+ggplot(profits, aes(x = year, y = profit, linetype = company, color = company)) +
+  geom_line() +
+  labs(Title = "Company A is more profitable")
+```
+
+Axis labels help
+
+```{r fig.width = 21, fig.height = 6}
+ggplot(profits, aes(x = year, y = profit, linetype = company, color = company)) +
+  geom_line() +
+  labs(Title = "Company A is more profitable",
+       x = "Years since 0 AD",
+       y = "Yearly profits reported in balance sheets")
+```
+
+Axis labels help
+
+```{r fig.width = 21, fig.height = 6}
+ggplot(profits, aes(x = year, y = profit, linetype = company, color = company)) +
+  geom_line() +
+  labs(Title = "Company A is more profitable",
+       x = "Years since 0 AD",
+       y = "Yearly profits reported in balance sheets") +
+  ylim(0,120) +
+  theme_bw()
+```
+
+To compare based on categories.
+
+```{r fig.width = 21, fig.height = 6}
+ggplot(mpg, aes(x = displ, y = cty)) +
+  geom_point() +
+  facet_wrap(~class) + 
+  theme_bw()
+```
+
+
+## Saving Plots
+
+You can use ggsave after you create a plot to save it.
+
+```{r}
+ggplot(mpg, aes(x = displ, y = cty)) +
+  geom_point() +
+  facet_wrap(~class) + 
+  theme_bw()
+ggsave("FacetedPlot.png")
+```

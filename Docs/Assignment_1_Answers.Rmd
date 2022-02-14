@@ -1,0 +1,111 @@
+---
+title: "Assignment 1.Rmd"
+author: "Irfan Kanat"
+date: "June 26, 2017"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+This is an assignment to evaluate your learning in this module. For each module there is a section in this document. Answer each question below the question and create an R Markdown document for submission.
+
+## 1 - Installation
+
+In order to be able to create and render R Markdown documents you should have successfully installed R. Hence your submission will be counted as proficiency in installation of R.
+
+## 2 - Reporting
+
+Successfully rendering this document (after answering questions) counts as proof that you have learned how to create R Markdown documents. In later assignments you will need to create your own R Markdown documents.
+
+## 3 - Introduction
+
+### Variables, Operators
+
+a - Replace the metadata in the document header to declare you as the author, and change the date to current date (Pst, it is at the very top of this file).
+
+b - Create a variable named **id** with the last 4 digits of your student number.
+
+```{r}
+id <- 1234
+```
+
+c - Multiply the id variable by 5 and save it in a variable called **idX5**.
+
+```{r}
+idX5 <- id * 5
+```
+
+### Dataframes
+
+For the following questions, get R to execute the following command.
+
+    admitData <- read.csv("https://stats.idre.ucla.edu/stat/data/binary.csv")
+
+```{r}
+admitData <- read.csv("https://stats.idre.ucla.edu/stat/data/binary.csv")
+```
+
+d - display the first 3 rows of the **admitData**.
+
+```{r}
+admitData[1:3,]
+```
+
+e - Display rows where rank is equal to 1.
+
+```{r}
+admitData[admitData$rank==1,]
+```
+
+### Functions
+
+f - get R to calculate the square root of idX5 variable (sqrt is your friend). 
+
+```{r}
+sqrt(idX5)
+```
+
+g - get R to calculate the mean of GRE scores in **admitData**.
+
+```{r}
+mean(admitData$gre)
+```
+
+## 4 - Packages
+
+h - Install and load the psych package in memory.
+
+```{r}
+install.packages("psych", repos = "http://cran.us.r-project.org")
+library(psych)
+```
+
+i - Use the describe() function (should be loaded to memory with psych package) with **admitData** to get descriptive statistics.
+
+```{r}
+describe(admitData)
+```
+
+## 5 - Import Data
+
+for the following questions, go to [Zillow.com's data site](https://www.zillow.com/research/data/#rental-data) and obtain **ZRI Summary: Multifamily, SFR, Condo/Co-op (Current Month)** dataset by zip code.
+
+j - Save the imported dataset into a **zillow** data.frame.
+
+```{r}
+zillow <- read.csv("http://files.zillowstatic.com/research/public/Zip/Zip_Zri_AllHomesPlusMultifamily_Summary.csv")
+```
+
+k - Calculate the mean Zillow Rent Index (ZRI)
+
+```{r}
+mean(zillow$Zri)
+```
+
+***BONUS***
+
+This is a bit harder, if you feel adventurous combine insights from question e and question g to calculate the mean ZRI for the state of Ohio.
+
+```{r}
+mean(zillow[zillow$State == "OH", "Zri"])
+```

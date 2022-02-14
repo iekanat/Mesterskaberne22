@@ -1,0 +1,327 @@
+---
+title: "Subsetting and Aggregation"
+author: "Irfan Kanat"
+date: "July 3, 2017"
+output:
+  pdf_document: default
+  html_document: default
+geometry: margin=1in
+urlcolor: blue
+---
+
+Following the first two learning activities of this module, we now know quite a bit about figuring out the characteristics of our datasets. In this learning activity we will learn about pre-processing data to obtain useful subsets and aggregations of data.
+
+## Introducing Data
+
+You may remember the **ZRI Summary: Multifamily, SFR, Condo/Co-op (Current Month)** dataset from Assignment 1. I will use the same dataset for demonstration purposes.
+
+```{r}
+zillow <- read.csv("data/zillow.csv")
+View(zillow)
+```
+
+## Subsetting with Indexes
+
+Subsetting is selecting a smaller sample from available data, be it observations (rows) or variables (columns).
+
+### Variables
+
+We have covered filtering the data in two separate learning activities thus far. Same principles can be used to extract a subset.
+
+By now, we know various ways to extract specific columns. Here are some new twists.
+
+**Dropping a Column**
+
+Let us say I want to drop a single column (MoM).
+
+```{r}
+colnames(zillow) # names of columns
+# MoM is the 9th column
+zillowSS0 <- zillow[, -9] # A negative index will exclude that column
+colnames(zillowSS0)
+```
+
+You can also drop multiple columns by combining negative indices.
+
+```{r}
+zillowSS1 <- zillow[, c(-9, -10)]
+colnames(zillowSS1)
+```
+
+I will now remove these subset datasets as they are cluttering the working environment (and to demonstrate rm() function).
+
+```{r}
+rm(zillowSS0, zillowSS1)
+```
+
+***This is a bit harder to follow but I am including it here for sake reminding you about logical operators and how they work in indexes.*** 
+
+A way to do the same with column name.
+
+```{r}
+# This is harder to follow, but achieves the same thing
+zillowSS0 <- zillow[, !(colnames(zillow) %in% "MoM")]
+colnames(zillowSS0)
+```
+
+Let us break it down.
+
+You know what zillow[,] does, it allows us to use indexes to call various rows and columns.
+  
+Let us look at what the other parts do.
+
+```{r}
+# This shows you if the column name matches MoM
+colnames(zillow) %in% "MoM"
+# If you use it to index zillow you will only get MoM
+# The exclamation mark reverts it, Trues become False and Falses become True
+!(colnames(zillow) %in% "MoM")
+# When we feed this to the index, we get all columns except "MoM"
+```
+
+You learned about two new operators %in% (matching) and ! (inverse). 
+
+### Observations
+
+You may be interested in only certain rows in a dataset. 
+
+Let us say we want to focus on rent in Ohio counties only. Remember the logic operators from earlier learning activities. 
+
+```{r}
+zillowOH <- zillow[zillow$State == "OH", ]
+```
+
+zillow$State == "OH" will return an array of True/False results. It will be true where State is Ohio, and false otherwise. When we feed this logical operation into the row index, and R will only return observations where evaluation resulted in True.
+
+We can also combine multiple criteria in our filtering. Let us say we are interested in rent in Ohio counties but only for areas where Zri is lower than $1000.
+
+```{r}
+zillowOHCheap <- zillow[zillow$State == "OH" & zillow$Zri < 1000, ]
+```
+
+We used an & (and operator) to combine two logical operations, R only returns results where both conditions evaluate True. 
+
+Let us say you have some flexibility, you are looking for a rental in Ohio ***or*** West Virginia.
+
+```{r}
+zillowOHWV <- zillow[zillow$State == "OH" | zillow$State == "WV", ]
+```
+
+Here we used a | (or operator) to combine two logical operations, R only returns results where at least one condition is True.
+
+Let us clean the workspace by removing some datasets.
+
+```{r}
+# Yeah, this may be a bit obscure at the moment. Try to figure it out, its good exercise.
+rm(list = ls(pattern = "zillowOH*"))
+```
+
+Here is a little exercise for you. Considering there are `r nrow(zillow)` observations in zillow dataset, can you make R randomly select 50 numbers between 1 and `r nrow(zillow)` and create a random subset? Hint: read about sample function.
+
+## Subset Function
+
+Subset function can do both variable and column subsetting at the same time and it has a more intuitive interface than indexing.
+
+Check the manual pages. 
+
+```{r}
+?subset
+```
+
+The subset syntax is as follows:
+
+    subset(x, subset, select, drop)
+    
+  + x is the data to be subsetted.
+  + subset is the criteria for rows.
+  + select is the list of columns to keep
+  
+only x is mandatory.
+
+### Selecting Variables
+
+Let us just select State, County, and Zri from zillow dataset.
+
+```{r}
+# Note the lack of quotation marks
+zillowSS0 <- subset(zillow, select = c(State, County, Zri))
+colnames(zillowSS0) # names of columns
+head(zillowSS0) # A sampling of data
+```
+
+Here I called subset with two parameters.
+1. zillow: I specified which data is to be subsetted.
+2. select=c(State, County, Zri): I specified which columns I wanted to keep.
+
+One nice thing about subset is that you can use ranges of columns with names just like with ranges of numbers. Let us say we want all variables between date and zri.
+
+```{r}
+# Note the lack of quotation marks
+zillowSS1 <- subset(zillow, select = Date:Zri)
+colnames(zillowSS1) # names of columns
+head(zillowSS1) # A sampling of data
+```
+
+Here I called subset with two parameters again.
+1. zillow: the dataset
+2. select=Date:Zri: I specified a range of columns from Date to Zri.
+
+```{r}
+rm(list = ls(pattern = "zillowSS*"))
+```
+
+### Selecting Observations
+
+Just as in the indexing, we can use logical operators to extract specific rows.
+
+Let us carry out that example of Ohio or West Virginia.
+
+```{r}
+zillowOHWV <- subset(zillow, State == "OH" | State == "WV")
+head(zillowOHWV)
+```
+
+Here I called subset with two parameters
+1. zillow: the dataset
+2. State == "OH" | State == "WV": State is OH or WV 
+
+Plain language translation of this command is: "get me the rows from zillow dataset where the state is either Ohio or West Virginia."
+
+```{r}
+rm(zillowOHWV)
+```
+
+### Selecting Both
+
+We can subset both variables and observations at the same time.
+
+```{r}
+zillowOW <- subset(zillow, 
+                   (State == "OH" | State == "WV") & Zri < 1000,
+                   select = Date:Zri)
+```
+
+Same idea, only made more complicated by including both row and column subsetting. Parameters:
+1. zillow: dataset
+2. (State=="OH" | State=="WV") & Zri<1000: State is Ohio or West Virginia, and Zri is less than 1000
+3. select=Date:Zri: columns between Date and Zri
+
+Plain language translation of this command is: "Get me columns from Date to Zri of the zillow dataset, where the state is either Ohio or West Virginia, and the Zri is less than 1000."
+
+```{r}
+rm(zillowOW)
+```
+
+## Aggregating
+
+Zillow Data is at zip code level. Let us say we are interested in State level data. We do not care about specific zip codes. Should we look for state level data elsewhere or is there a way to convert the zip code level data to state level?
+
+What we can do is to aggregate the zip code level data to obtain a State level dataset.
+
+Aggregating allows you to come up with combined measures for broad categories from lower level observations. You can aggregate individual student scores to obtain a school level score, or company level profitability data to obtain industry level profitability measures.
+
+When you are aggregating data, you need to make certain decisions about variables. Certain variables are more meaningful as averages (average rent in OH), other variables are more meaningful as sums (population), and yet others as maximums (Dates). Some variables will need to be abandoned all together (zip codes). The correct function to use will depend on the analysis you want to do. It is a judgment call, and it is hard to teach. Just use your intuition and try to learn from your mistakes as you go.
+
+The simplest way to aggregate data that is available in R Base is the aggregate() function. Let us inspect manual pages for aggregate().
+
+```{r}
+?aggregate
+```
+
+aggregate() can work either with a formula or with a by parameter.
+
+### Aggregate By
+
+We can specify the columns to aggregate by and aggregate will process all numeric columns (unless otherwise indicated).
+
+Let us drop all non-numeric columns, you will note this is mostly lower level data such as city names that will need to be dropped anyway:
+
+```{r}
+# Let us drop non-numeric columns
+zillowSS0 <- subset(zillow, select = c(State, SizeRank:ZriRecordCnt))
+```
+
+Let us  values for all other variables and save it into a new dataset.
+
+```{r}
+# Aggregate
+zillowState <- aggregate(x = zillowSS0[, -1], by = list(zillowSS0$State),
+                         FUN = mean, na.rm = T)
+```
+
+Let us break the command down:
+
+    zillowState <- aggregate(x = zillowSS0[,-1], by = list(zillowSS0$State), FUN = mean, na.rm = T)
+    
+1. zillowState <- : Here I create a new dataset and assign whatever is on the other side of the assignment operator (<-) to it.
+2. aggregate(): I call aggregate function with 4 parameters.
+  + x = zillowSS0[,-1]: Aggregate everything in zillowSS0 except for State (1^st^ column).
+  + by = list(zillowSS0$State): Use State as the aggregating variable
+  + FUN = mean: use mean function to calculate average values for States.
+  + na.rm = T: Remove missing observations (more on this later).
+  
+Translation to plain English would be: "calculate the averages of everything in zillowSS0[,-1] by State, skip missing observations in calculations."
+
+It has 51 observations, same as the number of states... That is encouraging.
+
+Let us see if we got it right by calculating the average Zri for Ohio and comparing it to aggregated value of Zri.
+
+```{r}
+mean(zillow[zillow$State == "OH", "Zri"])
+zillowState[zillowState$Group.1 == "OH", ]
+```
+
+Seems like we got it right!
+
+You can change the type of calculation done on a variable by specifying a different function in FUN parameter. You can even use your own functions.
+
+### Aggregate with Formula
+
+R uses formula interface in models, aggregate allows you to use a similar interface to aggregate data.
+
+Formula can be thought of an equation, on the left-hand side you have dependent variables, and on the right you have independent variables.
+
+    Zri ~ State
+
+would mean estimate Zri by State.
+
+To calculate average Zri by state, we can simply type.
+
+```{r}
+aggregate(Zri ~ State, data = zillowSS0, FUN = mean, na.rm = T)
+```
+
+To obtain the same result as the example in Aggregate By section we can use a . (dot) notation. Rather than giving a list of variables we can place a . to signify all variables in data.
+
+```{r}
+aggregate(.~State, data = zillowSS0, FUN = mean, na.rm = T)
+```
+
+Let us go over the function call:
+
+    aggregate(.~State, data=zillowSS0, FUN= mean, na.rm=T)
+    
+1. aggregate(): I call the aggregate function with 4 parameters.
+  + .~State: 
+    * . : means all variables
+    * ~ : is like an equals sign in a formula, it translates to estimate what's to my left by what's to my right
+    * State : What will be used to group by, you can add more variables with a + sign.
+  + data = zillowSS0: use zillowSS0 dataset to find variables
+  + FUN = mean: use mean function to aggregate, alternatives can be any function such as sum, max, min...
+  + na.rm = TRUE: Skip missing observations.
+  
+Personally, I find the formula interface to be cleaner.
+
+## Further Reading
+
+If you want to see more examples, refer to [Data Manipulation (terrible name choice) section](https://github.com/iekanat/rworkshop/blob/master/4_DataManipulation.Rmd) of my R Workshop. The material was aimed at a more advanced audience, but with the foundations laid in this section you can follow along with it.
+
+## Solutions to Exercises
+
+1-Can you make R randomly select 50 numbers between 1 and `r nrow(zillow)` and create a random subset? 
+
+```{r}
+# Setting seed for random number generator to ensure reproducibility
+set.seed(2017)
+zillowRandom <- zillow[sample(1:nrow(zillow), 50), ]
+```

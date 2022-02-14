@@ -1,0 +1,330 @@
+---
+title: "Descriptive Statistics"
+author: "Irfan Kanat"
+date: "July 3, 2017"
+output:
+  pdf_document: default
+  html_document: default
+geometry: margin=1in
+urlcolor: blue
+---
+
+First order of business in any analytics task is to understand what we have in our hands. We are familiar with some of these methods and others we will learn as we go. 
+
+## Visual Inspection
+
+Let's think of an example. Let's say you have 30 bags full of oranges. While there is some difference in weights, they are more or less the same. 
+
+Don't worry about the code below, I will create a series of weights for our hypothetical bags. Right now, the things I do may be hard to follow, but they are not essential for this part of the activity.
+
+```{r}
+# Setting the seed for random number generator so that examples stay consistent.
+set.seed(2017)
+# Create a data frame
+bagsOfOranges <- data.frame(bagNo = 1:30, 
+                            weight = rnorm(30, mean = 1.9, sd = .1))
+```
+
+Let us say the weights of each bag is stored in bagsOfOranges data.frame. Let us take a look at the data. View command presents a spread sheet like view of the data.
+
+```{r}
+# Or you can double click on the name of the data.frame in environment pane in Panel C.
+View(bagsOfOranges)
+```
+
+You can also achieve the same in the commandline by simply typing the name of the dataset.
+
+```{r}
+bagsOfOranges
+```
+
+If you want to simply see the observations in the first few rows you can use head() function.
+
+```{r}
+# n parameter specifies how many lines to display, it is optional meaning you can leave it out.
+head(bagsOfOranges, n = 4)
+```
+
+Similarly with the bottom observations
+
+```{r}
+tail(bagsOfOranges) # here I leave n parameter out, the default is 6 rows.
+```
+
+If you recall the Introduction to Statistical Computing Environments module's Introduction learning activity, we discussed indexes as a way to access data in a data.frame.
+
+Let us say we want to see only the weight column, there are a few ways to do that.
+
+```{r}
+# Method 1
+bagsOfOranges[, 2] # second column, notice the position of the comma.
+# Method 2
+bagsOfOranges[, "weight"] # with column name
+# Method 3
+bagsOfOranges$weight # with $ operator and column name
+```
+
+Remember we can also index rows. Below are a few ways of doing the same
+
+```{r}
+bagsOfOranges[2, ] # Second observation, notice the position of comma
+```
+
+You can request a range of observations. Let us say you are interested in observations 4 through 8.
+
+```{r}
+# Method 1
+# Observe what : operator creates
+4:8
+# If I use the : operator to index a data.frame, we get what we want.
+bagsOfOranges[4:8, ] # Observations 4 through 8
+
+# Method 2
+# Another way it to specify columns explicitly. We can use c() function to combine values
+# Observe what c function creates
+c(4, 5, 6, 7, 8)
+# If I use the c operator, I can request specific rows
+bagsOfOranges[c(4, 5, 6, 7, 8), ] # Observations 4 through 8
+
+# Method 3
+# Of course you can combine the two approaches
+bagsOfOranges[c(4:6, 7, 8), ]
+```
+
+Combine function is more useful if you want to get specific observations only. Let us say 3^rd^ and 7^th^.
+
+```{r}
+bagsOfOranges[c(3, 7), ]
+```
+
+Think about what we just learned. This way you can see how your data looks and see specific parts of it.
+
+Let me tell you about a few useful functions that are helpful in knowing more about your data.
+
+To see the number of observations, use the nrow() function for data.frames and the length() function for vectors (each row is a vector).
+
+```{r}
+nrow(bagsOfOranges) # bagsOfOranges is a data.frame
+length(bagsOfOranges$bagNo) # bagNo is a vector
+```
+
+Let's revisit filtering data frame with a logic operator (learning activity 3 module 1).
+
+Remember we can use logic operators to evaluate a statement. Let us see which bags have more than 2 pounds of oranges.
+
+```{r}
+# Observe the output of logic operator, we are trying to see which bags have more than 2 pounds
+bagsOfOranges$weight > 2 # Is weight greater than 2?
+# The output is a series of True False
+# If we feed this output into our dataframe index, it will only spit out the rows where evaluation is TRUE.
+bagsOfOranges[bagsOfOranges$weight > 2, ]
+```
+
+Now a simple exercise for you. Can you make R spit out how many bags have more than 2 pounds of oranges? What is the percentage of overweight bags? (See the end of document for solution)
+
+## Average - Mean
+
+If anyone asks you how much a bag of oranges weights, what would you say?
+
+You will give a figure based on your experience with the bags. This figure will most probably be the mean, or the average weight of bags. You can think of the average as the simplest model one can fit to the data. If you know next to nothing about other variables, the best you can do in a pinch is to report mean.
+
+In R you can get the average with the mean() function.
+
+```{r}
+mean(bagsOfOranges$weight)
+```
+
+## Standard Deviation
+
+I will now create a second batch of bags full of apples. Let us say the apples are not as uniform as oranges and they differ greatly in terms of weights. Don't worry much about this piece of code.
+
+```{r}
+# Create a data frame
+bagsOfApples <- data.frame(bagNo = 1:30, 
+                           weight = rnorm(30, mean = 2.1, sd = .5))
+```
+
+Now let us compare apples to oranges in terms of average weight.
+
+```{r}
+mean(bagsOfApples$weight)
+mean(bagsOfOranges$weight)
+```
+
+The two figures are pretty close to each other. Can we say that a bag of apples will weigh more or less the same as a bag of oranges?
+
+Not really. Mean is a simple model and is useful if the difference (variance) in bags is also similar between the groups. If there is great difference between weights of the bags in the two groups, mean is not very useful (as one bag can be .7 pounds and the next may be 3.4 pounds).
+
+Let us learn how to figure out the difference. A common measure of difference is standard deviation (sd).
+
+Let us compare apples to oranges in terms of standard deviation with sd() function.
+
+```{r}
+sd(bagsOfApples$weight)
+sd(bagsOfOranges$weight)
+```
+
+You can see the difference between weights of Orange bags is much smaller than the difference between the weights of Apples.
+
+Let's look into what this difference means visually. For now, do not worry too much about the code, you will learn how to visualize data in the following learning activity.
+
+```{r}
+library(ggplot2) # Load the necessary library for fancy plots
+library(gridExtra) # The library to put two panels with plots together
+
+# Create the plot for Apples
+p1 <- ggplot(data = bagsOfApples, aes(weight)) + # initialize a plot for data
+  xlim(0, 4) + # Set the limits of x axis to keep plots comparable
+  ylim(0, 13) + # Set the limits of y axis to keep plots comparable
+  ggtitle("Apples") + # Set the title to be able to identify plots
+  geom_histogram(binwidth = .1) + # Set the type of plot as a histogram
+  # Add the mean into the plot as a blue dashed line
+  geom_vline(data = bagsOfApples, aes(xintercept = mean(weight)),
+             linetype = "dashed", colour = "blue") +
+  # Overlay density plot to show distribution
+  geom_density(alpha = .2, fill = "red") +
+  theme_bw() # Make it look good
+
+# Create the plot for Oranges
+p2 <- ggplot(data = bagsOfOranges, aes(weight)) + # initialize a plot for data
+  xlim(0, 4) + # Set the limits of x axis to keep plots comparable
+  ylim(0, 13) + # Set the limits of y axis to keep plots comparable
+  ggtitle("Oranges") + # Set the title to be able to identify plots
+  geom_histogram(binwidth = .1) +  # Set the type as histogram
+  # Add the mean into plot as a blue dashed line
+  geom_vline(data = bagsOfOranges, aes(xintercept = mean(weight)),
+             linetype = "dashed", colour = "blue") +
+  # Overlay density plot to show distribution
+  geom_density(alpha = .2, fill = "red") +
+  theme_bw() # Make it look good
+
+grid.arrange(p1, p2)
+```
+
+Look at the above plots. These are called histograms, this histogram shows us how many bags were observed in a certain weight class. 
+
+Oranges is pretty normally distributed with a small standard deviation, whereas apples have a large standard deviation. Hence the mean value does not quite work to compare apples and oranges as they are quite differently distributed.
+
+### T Test
+
+I want to take a tiny segue here. If you want to compare two groups and to see if they are the same or not (Do men and women weight the same? Are business students and engineering students have similar SAT scores?) you can use a t test. In a normal distribution, roughly 99.7% of observations will be 2 standard deviations away from the mean. Basically, a T test compares the mean values of each group and uses the standard deviations to determine if they are indeed the same.
+
+
+```{r}
+t.test(bagsOfApples$weight, bagsOfOranges$weight)
+```
+
+The p value below .05 indicates the t test shows statistically significant differences between bags of apples and bags of oranges.
+
+## Median
+
+The apples and oranges were normally distributed (a bell curve with more or less equal number of observations on either side of mean). When distribution is not normal (Consider how wages are distributes with lots of observations on the left with low wages and few very high observations to the right) it is best to report the median instead of the mean. Median is the middle observation, with exactly the same number of observations above and below median.
+
+Since apples were normally distributed, median will be similar to mean.
+
+```{r}
+median(bagsOfApples$weight)
+```
+
+## Summary Statistics
+
+It is all good and fine to evaluate variables one by one, but realistically you won't have the time to go through a data set, evaluating variables one by one. There may be hundreds of variables. Let us talk about how to get summary statistics in R easily.
+
+Let us load a dataset to further explore. R and R packages often come with useful data. Let us use a prepackaged dataset here.
+
+[In this document we will analyze the Motor Trends data.](http://www.jstor.org/stable/2530428) The dataset was compiled from 1974 issues of Motor Trends magazine and is included with R Base package.
+  
+Let us start with loading the dataset.
+  
+```{r}
+data(mtcars)
+```
+
+As we learned in the section on packages, you can query the documentation for almost anything. Including the datasets included in packages. The document includes descriptions of the variables.
+
+```{r}
+?mtcars
+```
+
+### Summary Function
+
+Easiest way is to use summary() function in R. It comes bundled with R Base and is loaded in memory by default, so you don't have to load any libraries.
+
+```{r}
+# A summary of variables
+summary(mtcars)
+```
+
+The output from summary function displays Mean and Median as well as quartiles, minimum and maximum. This output is very useful in trying to guess the underlying distribution of the dataset.
+
+## Describe Function
+
+A more detailed output can be obtained by the describe function in psych package (you know how to install and activate packages from previous module).
+
+```{r}
+library(psych)
+describe(mtcars)
+```
+
+As you can see, beyond what is reported in summary, the describe function also reports standard deviation and standard error. 
+
+You may notice skewness and kurtosis of the data. These are useful in estimating how far the distribution is from normal (bell curve). Skewness shows how far from symmetrical the distribution. Skewness for a normal distribution is zero, symmetrical data should have values close to zero. Kurtosis is the amount of data below the tails. The kurtosis for normal distribution is 0. The further from the normal, the more different the values will be.
+
+At first the skewness and kurtosis may seem alarming, I just want you to realize there is no normal distribution in real life. All data differs from normal to some degree. You can test for normality using various tests like Kolmogorov-Smirnov tests. If your goal is prediction, deviations from normalcy is not a really big deal. The real problems start when you try using the model for explanation.
+
+
+## Correlations
+
+Correlation is a good measure of how two variables are related. It basically shows you what happens to one variable when you change another. This is a bivariate comparison, meaning it will ignore the effect of all other variables besides the two.
+
+To obtain a correlation table in R you simply use cor() function.
+
+```{r}
+# Correlation table for first 4 variables (due to space concerns)
+cor(mtcars[, 1:4])
+```
+
+A variable will always be perfectly correlated with itself (perfect correlation = 1), if there is no correlation the value will be 0. If the correlations are negative, this means variables are inversely related. 
+
+You can see that amount of horse power in a car is inversely related to miles per galon (-0.776), but the number of cylinders is positively related to horsepower.
+
+## Tabulating the Data
+
+If you want to see how various groups (groups often mean categorical variables) compare to each other, you can always tabulate the data with table command.
+
+At its most basic you can get a count of each category for a single categorical variable. Let us tabulate the number of gears.
+
+```{r}
+table(mtcars$gear)
+```
+
+There are 15 cars with 3 gears and 5 cars with 5 gears.
+
+Let us see a tabulation of Transmission type (Automatic = 0 and Manual = 1) by Number of Cylinders.
+
+```{r}
+# bivariate comparisons of categorical variables
+table(mtcars[, c("am", "cyl")])
+```
+
+Based on the data, most cars with 8 cylinders come with automatic transmissions. For 4-cylinder cars, most of them are manual.
+
+## Solutions to Exercises
+
+1 - Can you make R spit out how many bags have more than 2 pounds of oranges? What is the percentage of overweight bags?
+
+```{r}
+# Use nrow() function to figure out the number
+nrow(bagsOfOranges[bagsOfOranges$weight > 2, ])
+# We can divide this with the total number of rows to get percentage.
+nrow(bagsOfOranges[bagsOfOranges$weight > 2, ]) / nrow(bagsOfOranges)
+```
+
+## Housekeeping
+
+Ignore this part, basically this part is to export data created so it can be used in Rmarkdown documents later.
+
+```{r}
+write.csv(bagsOfApples, file = "data/bagsOfApples.csv", row.names = F)
+write.csv(bagsOfOranges, file = "data/bagsOfOranges.csv", row.names = F)
+```

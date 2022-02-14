@@ -1,0 +1,184 @@
+---
+title: "Combining Datasets"
+author: "Irfan Kanat"
+date: "July 4, 2017"
+output:
+  html_document: default
+  pdf_document: default
+geometry: margin=1in
+urlcolor: blue
+---
+
+Sometimes the variables we want are spread between two different datasets, or observations are coming from different files. How can we get all the data together? That is what we will learn in this activity.
+
+## Introducing Data
+
+We will use three datasets in this learning activity.
+
+1- Codes
+
+ISO Country Code data
+
+```{r}
+codes <- read.csv("data/codes.csv")
+```
+
+The dataset has 3 variables Name of the Country, ISO2 Code, and ISO3 Code.
+
+I will change the column names to ensure uniformity (and to demonstrate how it's done).
+
+```{r}
+colnames(codes) <- c("name", "iso2", "iso3")
+```
+
+2 - Users
+
+UN Data on number of internet users per 100 people. Data comes in 2 files, one for 2006 and one for 2007
+
+```{r}
+users2006 <- read.csv("data/Users2006.csv")
+users2007 <- read.csv("data/Users2007.csv")
+```
+
+Data has 3 variables, ISO3, Year, Users.
+
+3 - Internet Servers
+
+Worldbank data on secure internet servers per 1 million people
+
+```{r}
+servers <- read.csv("data/Servers.csv")
+```
+
+Data has 3 variables, iso3, Year, Servers.
+
+## Combine Rows
+
+When the datasets have the same structure (variables), you can just append rows of one to the next. 
+
+Consider our user data. It is currently split into two datasets, one for 2006 and one for 2007. Would it not be nice to have it in a single file?
+
+Let us check the structure of datasets.
+
+```{r}
+str(users2006)
+str(users2007)
+```
+
+Seems like the variables are the same, we can simply add the datasets end to end. I will use rbind() function to bind rows together.
+
+```{r}
+usersLong <- rbind(users2006, users2007)
+View(usersLong)
+```
+
+You will note the 2007 data just got added to the end of 2006 data. This format (each pairing of group, time in separate rows) is called a long format and is used very commonly in longitudinal and time series analysis.
+
+## Combine Columns
+
+If the data is structured accordingly, you can simply combine two datasets by bringing relevant columns together.
+
+```{r}
+head(users2006)
+head(users2007)
+```
+
+Same countries occur in same rows. We can create a wide dataset where each country gets a row and time observations are recorded in different variables.
+
+Let us make some tweaks so the data will sit nicely together.
+
+```{r}
+# Store the base dataset in a new data.frame
+usersWide <- users2006
+# Tweak the column names a bit
+colnames(usersWide) <- c("iso3", "year", "users2006")
+# Now append the relevant columns from second dataset
+usersWide$users2007 <- users2007$Users
+# We don't need year variable anymore since it is in column names.
+usersWide <- usersWide[, -2]
+# Let us look at what we created
+head(usersWide)
+```
+
+This is called a wide format dataset. While not as common, this format can sometimes be used in longitudinal analysis as well.
+
+## Combine Based on Groupings
+
+We have the user data in usersLong data.frame, but the name of the country is not immediately apparent in this dataset. If we could match the usersLong and country codes, we could easily tell which country was which.
+
+To combine datasets based on groups, we use the merge() function in R. Merge function is similar to a join function in SQL. If you are familiar with SQL, this will be easy to follow.
+
+Let us review the merge() manual pages.
+
+```{r}
+?merge
+```
+
+Merge takes a number of parameters:
+
+1. x: first dataset*
+2. y: second dataset*
+3. by, by.x, by.y: Which columns to use in merging.
+4. all, all.x, all.y: what to do with rows that are not matched (Left Join, Right Join, Inner Join...).
+
+* only the parameters marked with '\*' are mandatory. If other parameters are left blank, R will try to find common column names and merge based on common columns. 
+
+Let us merge codes and usersLong.
+
+```{r}
+users <- merge(codes, usersLong, by.x = "iso3", by.y = "ISO3")
+head(users)
+```
+
+Since the two datasets did not have matching column names, I had to specify columns with by.x, and by.y parameters.
+
+Let us review the function call:
+
+    users <- merge(codes, usersLong, by.x = "iso3", by.y = "ISO3")
+    
+1. users<-: I assign whatever is to the right of assignment operator (<-) to users
+2. merge(): I call merge function with four parameters
+  + codes: first dataset (x)
+  + usersLong: second dataset (y)
+  + by.x: column name in first dataset to use in matching.
+  + by.y: column name in second dataset to use in matching.
+  
+You will notice that users has `r nrow(users)` observations whereas the source dataset usersLong had `r nrow(usersLong)` observations. What is the source of difference?
+
+Some rows could not be matched and they were dropped.
+
+If you want to keep all observations from usersLong, you can use the all.y. 
+
+```{r}
+users <- merge(codes, usersLong, by.x = "iso3", by.y = "ISO3", all.y = TRUE)
+nrow(users)
+```
+There, much better.
+
+## Combine Based on Multiple Groupings
+
+What if we have more than one variable we want to match?
+
+Let us say we want to combine users and servers to get at an IT infrastructure dataset. There are two levels to data, countries and years... We need to match at two levels of groupings.
+
+Let us see how it is done.
+
+```{r}
+itInfrastructure <- merge(users, servers, by = c("iso3", "Year"))
+head(itInfrastructure)
+```
+
+Let us break down the command:
+
+    itInfrastructure<-merge(users, servers, by=c('iso3', 'Year'))
+
+1. itInfrastructure<-: Assign results into itInfrastructure data.frame
+2. merge(): I called merge function with 3 parameters:
+  + users: first dataset (x)
+  + servers: second dataset (y)
+  + by=c('iso3', 'Year'): since datasets had shared names for these variables I used a single by command and specified two variables.
+
+```{r}
+# I will export this dataset so we can use it in later exercises.
+write.csv(itInfrastructure, "data/itInfrastructure.csv", row.names = F)
+```

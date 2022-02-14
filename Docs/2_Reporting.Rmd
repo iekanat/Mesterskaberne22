@@ -1,0 +1,97 @@
+---
+title: "Reporting and Documentation"
+author: "Irfan Kanat"
+date: "June 26, 2017"
+output:
+  html_document: default
+  pdf_document: default
+urlcolor: blue
+---
+
+Throughout this course we will conduct various analyses in R and report on the results. Reporting is important because it achieves two things:
+
+  * Reproducibility of Results
+  * Communication of Results
+
+For this purpose we will mainly use R Markdown documents. This learning activity focuses on creating reports with R Markdown, but also points to other formats useful in analysis and reporting.
+
+## Reporting with R Markdown
+
+An adaptation of markdown format to R, the Rmd file format allows for presentable reporting of R analysis. All documents you encounter in relation to this class have been generated with R markdown. If you are preparing a report to be presented, Rmd is the format you should aim for.
+
+You may already have noticed that each learning activity comes with a bunch of files (pdf, html, video, and Rmd). Rmd files are the source files through which all other files are generated from. You can inspect them to see how to generate a report with R. I will be expecting all homework assignments related to this course to be submitted in the same format as well.
+
+Here are the most commonly used syntax elements.
+
+    ### Headers:
+
+    # A Hash Sign Signifies a Header
+    ## The More Hashes Mean Lower Level Headers
+    ### The More Hashes Mean Lower Level Headers
+
+  
+    ### Font Effects
+
+    If you want code to be *italic*, **bold**, or ***bold italic*** use asterisk (*) to surround the words you want emphasized. Single asterisk on each side will produce italic, double asterisks will create bold, and triple asterisks will produce . . . you got it, bold italic text.
+
+    ### R Code:
+
+    If you embed R code between ```{r} and ```, the code will be executed and results rendered on
+    resulting document. The area between the ```{r} and ``` is called a chunk. Note the difference
+    in rendering of chunk symbols between the rendered and raw versions. R will treat the backticks
+    as code, hence the difference.
+
+```{r, echo=F, comment=NA}
+cat("```{r}\n ls()\n```")
+```
+
+The code shown above, when rendered looks like this:
+
+### Headers:
+
+# A Hash Sign Signifies a Header
+## The More Hashes Mean Lower Level Headers
+### The More Hashes Mean Lower Level Headers
+
+### Font Effects
+
+If you want code to be *italic*, **bold**, or ***bold italic*** use asterisks (*) to surround the words you want emphasized. Single asterisk on each side will produce italic, double asterisks will create bold, and triple asterisks will produce . . . you got it, bold italic text.
+
+### R Code:
+
+If you embed R code between ```{r} and ```, the code will be executed and results rendered on resulting document. The area between the ```{r} and ``` is called a chunk. Note the difference in rendering of chunk symbols between the rendered and raw versions. R will treat the backticks as code, hence the difference.
+
+```{r}
+ls()
+```
+
+## A Word About R Markdown
+
+The way R studio processes R Markdown documents is to run them in an isolated R instance. That means R Markdown documents when rendered through "knit" button won't have access to data and packages in your current workspace. You need to load libraries, and data in each document you want to render using those. This is done to ensure reproducibility.
+
+## Executing and Rendering Code in R Markdown
+
+At this point, using the Rmd file rather than pdf or html files will make things easier to understand. If you are not already working on Rmd, I recommend switching to it now.
+
+If you want to run code in any chunk (that is an area defined by backticks) you can use the ![](figures/run.png) button. To run line by line, select the line and press CTRL and Enter at the same time. Go ahead the click the little downwards arrow next to the button to see your other options.
+
+Once you are done writing the document you can click the ![](figures/knit.png) button to create a pdf or html rendering of the markdown file.
+
+Refer to ['R Markdown Cheat Sheet'](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf) for more information on this format.
+
+## R Scripts
+
+R Scripts can be seen as the most basic form of reproducible analysis. If you have no concerns for presentation and just want to automate a process you can basically write your commands in a text file and change the extension to .R, thus achieving an R script file. You can then ask R to execute this file in the command line as seen below, thus repeating the process detailed in the script. This is good for automating work flows.
+
+    R CMD BATCH my_script.R
+
+## More Advanced Reporting Tools
+
+If you want to create presentations rather than reports, you can use [Beamer](http://rmarkdown.rstudio.com/beamer_presentation_format.html).
+
+For interactive documents with R, take a look at [Shiny](https://shiny.rstudio.com/).
+
+
+------
+
+![Creative Commons 4](figures/cc.png) How I Learned to Stop Worrying and Love the R Console by [Irfan E Kanat](http://irfankanat.com) is licensed under a [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/). Based on a work at [http://github.com/iekanat/rworkshop](http://github.com/iekanat/rworkshop).

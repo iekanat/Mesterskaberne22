@@ -1,0 +1,111 @@
+---
+title: "00_HelloR"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+```
+
+# Basics of R
+
+In this activity we will cover what R is, why is it so popular, and what it can do for us.
+
+We will learn about the R Studio User Interface. 
+
+Creating a project.
+
+Running R commands through interactive shell.
+
+Saving R commands in Scripts.
+
+R as a programming language.
+
+# R as a Programming Language
+
+## R as an Overengineered Calculator
+
+```{r}
+2+2
+2*3
+2^5
+```
+
+## Variables
+
+### Scalar
+
+```{r}
+A <- 2
+A
+B <- 3
+B
+A * B
+```
+### Array
+
+```{r}
+C <- 2:11
+C
+D <- c(2, 4, 6)
+D
+A*D
+```
+
+Indexing
+
+```{r}
+D[2]
+C[2:4]
+C[D]
+```
+
+### Dataframe
+
+```{r}
+data(mtcars)
+mtcars
+```
+
+Indexing
+
+```{r}
+mtcars[1,]
+mtcars[,3:5]
+mtcars[,"disp"]
+mtcars$disp
+
+mtcars[1:5, c("mpg","disp")]
+```
+
+## Functions
+
+Existing functions
+
+```{r}
+help()
+```
+
+Some functions are argumentative.
+
+```{r}
+help(min)
+min(mtcars$disp)
+mean(mtcars$disp)
+max(mtcars$disp)
+```
+
+Some functions are more argumentative.
+
+```{r}
+lm(mpg ~ disp + am, mtcars)
+```
+
+You can also write your own functions, but 99% of the time its better you use existing functions.
+
+```{r}
+Hello <- function(x){
+  print(paste("Hello",x))
+}
+Hello("Mesterskaberne")
+```

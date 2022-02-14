@@ -1,0 +1,54 @@
+---
+title: "Working Environment"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+```
+
+# Packages
+
+So if its better to use existing functions 99% of the time. Where does one get them?
+
+Answer is packages. R is an open source project and people develop packages for it all the time.
+
+As of February 2022, there are over 18000 packages in CRAN.
+
+Easier way to handle packages is to use the GUI. Before a package can be used:
+
++ Its files need to be installed
++ It should be loaded to the memory
+
+Below is how to do it from the command line.
+
+```{r}
+# Install files needed
+install.packages("ggplot2")
+# Load it to memory
+library(ggplot2)
+```
+
+# Working Directories
+
+When you launch R, the folder you launched R from becomes the working directory.
+
+You can refer to the files in the wd with relative paths, the files you save will be saved here.
+
+On GUI, you can do it in the files tab.
+
+Here is how to do it from command line.
+
+```{r}
+# Find out what our wd is
+getwd()
+# Save wd in a variable
+myWD <- getwd()
+# Here is how you change wd. In this case it won't be changed.
+setwd(myWD)
+```
+# Projects
+
+R studio is a really useful IDE. The work you do in R Studio will be saved as a project.
+
+This allows you to pick up quickly where you left off. 

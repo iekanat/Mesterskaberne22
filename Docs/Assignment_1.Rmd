@@ -1,0 +1,111 @@
+---
+title: "Assignment 1"
+author: "Irfan Kanat"
+date: "June 26, 2017"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+This is an assignment to evaluate your learning in this module. For each learning activity there is a section in this document. Answer each question below the question and create an R Markdown document for submission.
+
+## 1 - Installation
+
+In order to be able to create and render R Markdown documents you should have successfully installed R. Hence your submission will be counted as proficiency in installation of R.
+
+## 2 - Reporting
+
+Successfully rendering this document (after answering questions) counts as proof that you have learned how to create R Markdown documents. In later assignments you will need to create your own R Markdown documents.
+
+## 3 - Introduction
+
+### Variables, Operators
+
+a - Replace the metadata in the document header to declare you as the author, and change the date to current date (Pst, it is at the very top of this file).
+
+b - Create a variable named **id** with the last 4 digits of your student number.
+
+```{r}
+
+```
+
+c - Multiply the id variable by 5 and save it in a variable called **idX5**.
+
+```{r}
+
+```
+
+### Dataframes
+
+For the following questions, get R to execute the following command.
+
+    admitData <- read.csv("https://stats.idre.ucla.edu/stat/data/binary.csv")
+
+```{r}
+
+```
+
+d - Display the first 3 rows of the **admitData**.
+
+```{r}
+
+```
+
+e - Display rows where rank is equal to 1.
+
+```{r}
+
+```
+
+### Functions
+
+f - Get R to calculate the square root of idXday variable (sqrt is your friend). 
+
+```{r}
+
+```
+
+g - Get R to calculate the mean of GRE scores in **admitData**.
+
+```{r}
+
+```
+
+## 4 - Packages
+
+h - Install and load the psych package in memory.
+
+```{r}
+
+
+```
+
+i - Use the describe() function (should be loaded to memory with psych package) with **admitData** to get descriptive statistics.
+
+```{r}
+
+```
+
+## 5 - Import Data
+
+for the following questions, go to [Zillow.com's data site](https://www.zillow.com/research/data/#rental-data) and obtain **ZRI Summary: Multifamily, SFR, Condo/Co-op (Current Month)** dataset by zip code.
+
+j - Save the imported dataset into a **zillow** data.frame.
+
+```{r}
+
+```
+
+k - Calculate the mean Zillow Rent Index (ZRI)
+
+```{r}
+
+```
+
+***BONUS***
+
+This is a bit harder, if you feel adventurous combine insights from question e and question g to calculate the mean ZRI for the state of Ohio.
+
+```{r}
+
+```

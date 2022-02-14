@@ -1,0 +1,78 @@
+---
+title: "Resources for Further Learning"
+author: "Irfan Kanat"
+date: "June 26, 2017"
+output:
+  pdf_document: default
+  html_document: default
+urlcolor: blue
+---
+
+Now that we have covered the basics, I would like to point you towards some online resources so you can keep learning beyond the class content. There are lots of valuable sources to find out about R online, I will briefly touch the ones I use most often. The list is by no means exhaustive.
+
+## Read The Friendly Manual (RTFM)
+
+### Man(ual) Pages
+
+First things first, the most useful sources are usually the ones under your hands.
+
+Use the documentation that comes with R and R packages to your advantage.
+
+Let us inspect how a manual page for a typical R function looks like:
+
+```{r}
+help(ls)
+```
+
+Inspect the Help pane in Area D.
+
+At the very top is the name of the package (in ls case base) that includes the function.
+
+Beneath it is a simple descriptive title and a short description of the function.
+
+Then you see function call (usage) with all parameters listed, followed by description of parameters (Arguments).
+
+Finally at the very end are a bunch of examples demonstrating various ways of using the function.
+
+Using the information listed in these manual pages you can figure out what you need to do to use a function (or figure out why it is not working the way you expect it to work).
+
+### Package Documentation
+
+Beyond the manual, most packages also include a vignette or a tutorial that demonstrates various finer points of using these packages, as well as discussion of methodology underlying the package. These documents can be found in [CRAN](https://cran.r-project.org) pages of packages.
+
+Reading these vignettes and (often) accompanying Journal of Statistical Software articles can teach you the finer points in using the package. If you are so inclined they are also great resources in learning about the underlying methodological foundations of the analysis.
+
+I have found reading these vignettes and articles to be extremely useful as without knowing the details, any analyst is bound to make mistakes (disregarding violations of assumptions, or using wrong type of data) in analysis. 
+
+Here are some examples: 
+
+[PLM package page](https://cran.r-project.org/web/packages/plm/index.html) 
+
+[Carret package page](https://cran.r-project.org/web/packages/caret/index.html)
+
+Check out the vignettes.
+
+## Other Interfaces for Reaching Packages
+
+Cran website looks a bit out dated. I still prefer cran but [R Forge](https://r-forge.r-project.org/) presents a cleaner interface.
+
+Searching for a single letter in Google (R) may not always give you the results you seek (although google learns what you mean by R pretty quickly). You may want to start with [Rseek](http://rseek.org/).
+
+## Good Source for Tutorials
+
+If you are looking to do some quick analysis and don't worry about making big mistakes, you can jump right in with a tutorial.
+
+[Quick-R](http://www.statmethods.net/), [R Cookbook](http://www.cookbook-r.com), and [Institute For Digital Research and Education, UCLA](https://stats.idre.ucla.edu/other/dae/) provide good tutorials on most common statistical analysis.
+
+Both Quick-R and R Cookbook can be purchased as dead tree books if you are so inclined.
+
+## When You Have a Question
+
+During this course, I will try to answer your questions. After the course you can do what I do. Ask your questions on [Stack Exchange](https://stackexchange.com/). This is an online community where thousands of users seek answers to their questions daily. If you are having a problem, you can be sure that you are not the only one and in all likelihood someone answered your question 4 years ago.
+
+Go to [Stack Overflow](https://stackoverflow.com/) for more programming type questions.
+
+Go to [Cross Validated](https://stats.stackexchange.com/) for more statistics type questions.
+
+It is very important to ask the question the right way. [If you don't follow the instructions](https://stackoverflow.com/help/how-to-ask), you won't receive helpful answers.
+
