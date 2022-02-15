@@ -1,0 +1,71 @@
+---
+title: "Descriptives"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# Import Data
+library(ggplot2)
+data(mpg)
+# To get away from tidyverse
+mpg <- data.frame(mpg)
+```
+
+In this activity we will learn about taking a quick look at the data once it is 
+imported. We will use the mpg dataset included in ggplot2 package.
+
+## Structure
+
+Once the data is in, first thing you will want to know is how many variables, 
+and how many observations are in it. Followed by what type of variables are 
+included.
+
+Use str function to display the structure of the dataframe.
+
+```{r}
+str(mpg)
+```
+First line tells you there are 32 observations (rows) and 11 variables (columns).
+
+It is followed by a list of columns. The chr, num, int tell you the type of data.
+
+Then you see the first few values of the variable.
+
+The type of data is very important as this tells you what to expect and can
+inform your decisions to visualize and model this data.
+
+## Descriptives
+
+Next you will want to know is the descriptive statistics on the data. 
+
+What is the average, maximum, minimum and so on. This information can give you an
+inkling of what the distribution looks like.
+
+```{r}
+summary(mpg)
+```
+
+You can see the information we mentioned in the output. There are no missing values
+in this dataset. If there were, we would also find out about them here.
+
+## Individual Functions
+
+Sometimes you may want to refer to descriptives on their own, or use them in your
+calculations. There are individual functions for this type of information.
+
+Here are some examples.
+
+```{r}
+# Observations
+nrow(mpg)
+# Variables
+ncol(mpg)
+# Average city mpg
+mean(mpg$cty)
+# Max highway mpg
+max(mpg$hwy)
+# min number of cylinders
+min(mpg$cyl)
+# standard deviation of hwy
+sd(mpg$hwy)
+```

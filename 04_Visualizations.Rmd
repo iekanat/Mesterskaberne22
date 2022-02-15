@@ -93,6 +93,12 @@ ggplot(profits, aes(x = year, y = profit, linetype = company, color = company)) 
   geom_line()
 ```
 
+### Quick and Dirty Exploration
+
+```{r}
+plot(mpg)
+```
+
 ## Making Things Clearer
 
 Title's help
@@ -133,7 +139,6 @@ ggplot(mpg, aes(x = displ, y = cty)) +
   facet_wrap(~class) + 
   theme_bw()
 ```
-
 
 ## Saving Plots
 

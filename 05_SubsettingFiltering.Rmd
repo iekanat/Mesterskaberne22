@@ -1,0 +1,214 @@
+---
+title: "Subsets"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+zillow <- read.csv("zillow.csv")
+```
+
+
+## Introducing Data
+
+Zillow is the boligsiden of USA. This dataset shows zillow rent index at zip code
+level.
+
+```{r}
+zillow
+```
+
+## Subsetting with Indexes
+
+Subsetting is selecting a smaller sample from available data, be it observations
+(rows) or variables (columns). You may for example only want observations from
+accounting department, or only people over a certain age... This is when 
+subsetting becomes useful.
+
+### Variables
+
+You can select a column by its column number. I will use head function to limit 
+the output.
+
+```{r}
+head(zillow[, 5])
+```
+You can use the name of the column.
+
+```{r}
+head(zillow[, "Metro"])
+```
+You can select multiple columns by column number.
+
+```{r}
+c(1:4, 8)
+head(zillow[,c(1:4, 8)])
+```
+
+**Dropping a Column**
+
+Let us say I want to drop a single column (MoM).
+
+```{r}
+colnames(zillow) # names of columns
+# MoM is the 9th column
+zillowSS0 <- zillow[, -9] # A negative index will exclude that column
+colnames(zillowSS0)
+```
+
+You can also drop multiple columns by combining negative indices.
+
+```{r}
+zillowSS1 <- zillow[, c(-9, -10)]
+colnames(zillowSS1)
+```
+
+I will now remove these subset datasets as they are cluttering the working 
+environment (and to demonstrate rm() function).
+
+```{r}
+rm(zillowSS0, zillowSS1)
+```
+
+### Observations
+
+You may be interested in only certain rows in a dataset. 
+
+Let us say we want to focus on rent in Ohio counties only. 
+Remember the logic operators from earlier learning activities. 
+
+```{r}
+zillowOH <- zillow[zillow$State == "OH", ]
+```
+
+zillow$State == "OH" will return an array of True/False results. 
+It will be true where State is Ohio, and false otherwise. When we feed this 
+logical operation into the row index, and R will only return observations where 
+evaluation resulted in True.
+
+We can also combine multiple criteria in our filtering. Let us say we are 
+interested in rent in Ohio counties but only for areas where Zri is lower than $1000.
+
+```{r}
+zillowOHCheap <- zillow[zillow$State == "OH" & zillow$Zri < 1000, ]
+```
+
+We used an & (and operator) to combine two logical operations, R only returns 
+results where both conditions evaluate True. 
+
+Let us say you have some flexibility, you are looking for a rental in Ohio 
+***or*** West Virginia.
+
+```{r}
+zillowOHWV <- zillow[zillow$State == "OH" | zillow$State == "WV", ]
+```
+
+Here we used a | (or operator) to combine two logical operations, R only returns 
+results where at least one condition is True.
+
+Let us clean the workspace by removing some datasets.
+
+```{r}
+# Yeah, this may be a bit obscure at the moment. Try to figure it out, its good exercise.
+rm(list = ls(pattern = "zillowOH*"))
+```
+
+Here is a little exercise for you. Considering there are `r nrow(zillow)` 
+observations in zillow dataset, can you make R randomly select 50 numbers 
+between 1 and `r nrow(zillow)` and create a random subset? 
+
+Hint: read about sample function.
+
+## Subset Function
+
+Subset function can do both variable and column subsetting at the same time and it has a more intuitive interface than indexing.
+
+Check the manual pages. 
+
+```{r}
+?subset
+```
+
+The subset syntax is as follows:
+
+    subset(x, subset, select, drop)
+    
+  + x is the data to be subsetted.
+  + subset is the criteria for rows.
+  + select is the list of columns to keep
+  
+only x is mandatory.
+
+### Selecting Variables
+
+Let us just select State, County, and Zri from zillow dataset.
+
+```{r}
+# Note the lack of quotation marks
+zillowSS0 <- subset(zillow, select = c(State, County, Zri))
+colnames(zillowSS0) # names of columns
+head(zillowSS0) # A sampling of data
+```
+
+Here I called subset with two parameters.
+1. zillow: I specified which data is to be subsetted.
+2. select=c(State, County, Zri): I specified which columns I wanted to keep.
+
+One nice thing about subset is that you can use ranges of columns with names 
+just like with ranges of numbers. Let us say we want all variables between date and zri.
+
+```{r}
+# Note the lack of quotation marks
+zillowSS1 <- subset(zillow, select = Date:Zri)
+colnames(zillowSS1) # names of columns
+head(zillowSS1) # A sampling of data
+```
+
+Here I called subset with two parameters again.
+1. zillow: the dataset
+2. select=Date:Zri: I specified a range of columns from Date to Zri.
+
+### Selecting Observations
+
+Just as in the indexing, we can use logical operators to extract specific rows.
+
+Let us carry out that example of Ohio or West Virginia.
+
+```{r}
+zillowOHWV <- subset(zillow, State == "OH" | State == "WV")
+head(zillowOHWV)
+```
+
+Here I called subset with two parameters
+1. zillow: the dataset
+2. State == "OH" | State == "WV": State is OH or WV 
+
+Plain language translation of this command is: "get me the rows from zillow 
+dataset where the state is either Ohio or West Virginia."
+
+```{r}
+rm(zillowOHWV)
+```
+
+### Selecting Both
+
+We can subset both variables and observations at the same time.
+
+```{r}
+zillowOW <- subset(zillow, 
+                   (State == "OH" | State == "WV") & Zri < 1000,
+                   select = Date:Zri)
+```
+
+Same idea, only made more complicated by including both row and column subsetting. 
+Parameters:
+
+1. zillow: dataset
+2. (State=="OH" | State=="WV") & Zri<1000: State is Ohio or West Virginia, and Zri is less than 1000
+3. select=Date:Zri: columns between Date and Zri
+
+Plain language translation of this command is: "Get me columns from Date to Zri 
+of the zillow dataset, where the state is either Ohio or West Virginia, and the Zri is less than 1000."
+
+```{r}
+rm(zillowOW)
+```
